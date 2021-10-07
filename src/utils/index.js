@@ -1,11 +1,6 @@
 /* eslint-disable camelcase */
-const mapGetAllData = (song) => ({
-  id: song.id,
-  title: song.title,
-  performer: song.performer,
-});
 
-const mapGetSingleData = ({
+const mapDBToModel = ({
   id,
   title,
   year,
@@ -25,4 +20,4 @@ const mapGetSingleData = ({
   updatedAt: updated_at,
 });
 
-module.exports = { mapGetAllData, mapGetSingleData };
+module.exports = mapDBToModel;
