@@ -1,9 +1,9 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
+const { mapDBToPlaylists } = require('../../utils');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
-const { mapDBToPlaylist } = require('../../utils');
 
 class PlaylistService {
   constructor(collaborationsService) {
@@ -40,7 +40,7 @@ class PlaylistService {
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map(mapDBToPlaylist);
+    return result.rows.map(mapDBToPlaylists);
   }
 
   async deletePlaylistById(id) {
