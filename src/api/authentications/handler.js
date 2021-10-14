@@ -1,4 +1,5 @@
 const ClientError = require('../../exceptions/ClientError');
+const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
 
 class AuthenticationsHandler {
   constructor(authenticationsService, usersService, tokenManager, validator) {
@@ -25,34 +26,12 @@ class AuthenticationsHandler {
 
       await this._authenticationsService.addRefreshToken(refreshToken);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Authentication berhasil ditambahkan',
-        data: {
-          accessToken,
-          refreshToken,
-        },
-      });
-      response.code(201);
-      return response;
+      return postSuccessResponse(h, 'Authentication berhasil ditambahkan', { accessToken, refreshToken });
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
+        return clientErrorResponse(h, error);
       }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return serverErrorResponse(h);
     }
   }
 
@@ -76,22 +55,9 @@ class AuthenticationsHandler {
       };
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
+        return clientErrorResponse(h, error);
       }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return serverErrorResponse(h);
     }
   }
 
@@ -110,22 +76,9 @@ class AuthenticationsHandler {
       };
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
+        return clientErrorResponse(h, error);
       }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return serverErrorResponse(h);
     }
   }
 }

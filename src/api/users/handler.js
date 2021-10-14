@@ -1,4 +1,5 @@
 const ClientError = require('../../exceptions/ClientError');
+const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
 
 class UsersHandler {
   constructor(service, validator) {
@@ -16,33 +17,12 @@ class UsersHandler {
 
       const userId = await this._service.addUser({ username, password, fullname });
 
-      const response = h.response({
-        status: 'success',
-        message: 'User berhasil ditambahkan',
-        data: {
-          userId,
-        },
-      });
-      response.code(201);
-      return response;
+      return postSuccessResponse(h, 'User berhasil ditambahkan', { userId });
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
+        return clientErrorResponse(h, error);
       }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return serverErrorResponse(h);
     }
   }
 
@@ -58,22 +38,9 @@ class UsersHandler {
       };
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
+        return clientErrorResponse(h, error);
       }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return serverErrorResponse(h);
     }
   }
 }
