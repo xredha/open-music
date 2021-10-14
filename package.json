@@ -1,7 +1,7 @@
 {
   "name": "open-music",
   "version": "1.0.0",
-  "description": "Open Music Submission 1 Dicoding",
+  "description": "Open Music Submission Dicoding",
   "main": "index.js",
   "scripts": {
     "start-prod": "NODE_ENV=production node ./src/server.js",
@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "@hapi/hapi": "^20.1.0",
+    "@hapi/jwt": "^2.1.0",
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "joi": "^17.4.0",
     "nanoid": "^3.1.20",
