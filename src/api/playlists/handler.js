@@ -49,15 +49,15 @@ class PlaylistsHandler {
 
   async deletePlaylistByIdHandler({ params, auth }) {
     try {
-      const { id } = params;
+      const { id: playlistId } = params;
       const { id: credentialId } = auth.credentials;
 
-      await this._service.verifyPlaylistOwner(id, credentialId);
-      await this._service.deletePlaylistById(id);
+      await this._service.verifyPlaylistOwner(playlistId, credentialId);
+      await this._service.deletePlaylistById(playlistId);
 
       return {
         status: 'success',
-        message: 'Catatan berhasil dihapus',
+        message: 'Playlist berhasil dihapus',
       };
     } catch (error) {
       return error;
@@ -67,14 +67,14 @@ class PlaylistsHandler {
   async postSongToPlaylistHandler(request, h) {
     try {
       this._validator.validatePlaylistSongPayload(request.payload);
-      const { id } = request.params;
+      const { id: playlistId } = request.params;
       const { songId } = request.payload;
       const { id: credentialId } = request.auth.credentials;
 
-      await this._service.verifyPlaylistAccess(id, credentialId);
-      await this._service.addSongToPlaylist(id, songId);
+      await this._service.verifyPlaylistAccess(playlistId, credentialId);
+      await this._service.addSongToPlaylist(playlistId, songId);
 
-      return postSuccessResponse(h, 'Playlist berhasil ditambahkan');
+      return postSuccessResponse(h, 'Lagu berhasil ditambahkan ke dalam playlist.');
     } catch (error) {
       return error;
     }
@@ -82,11 +82,11 @@ class PlaylistsHandler {
 
   async getSongsFromPlaylistHandler({ params, auth }) {
     try {
-      const { id } = params;
+      const { id: playlistId } = params;
       const { id: credentialId } = auth.credentials;
 
-      await this._service.verifyPlaylistAccess(id, credentialId);
-      const songs = await this._service.getSongsFromPlaylist(id);
+      await this._service.verifyPlaylistAccess(playlistId, credentialId);
+      const songs = await this._service.getSongsFromPlaylist(playlistId);
 
       return {
         status: 'success',
@@ -101,12 +101,12 @@ class PlaylistsHandler {
 
   async deleteSongFromPlaylistByIdHandler(request) {
     try {
-      const { id } = request.params;
+      const { id: playlistId } = request.params;
       const { songId } = request.payload;
       const { id: credentialId } = request.auth.credentials;
 
-      await this._service.verifyPlaylistAccess(id, credentialId);
-      await this._service.deleteSongFromPlaylist(id, songId);
+      await this._service.verifyPlaylistAccess(playlistId, credentialId);
+      await this._service.deleteSongFromPlaylist(playlistId, songId);
 
       return {
         status: 'success',

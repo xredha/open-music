@@ -22,7 +22,7 @@ class AuthenticationsHandler {
       const refreshToken = this._tokenManager.generateRefreshToken({ id });
       await this._authenticationsService.addRefreshToken(refreshToken);
 
-      return postSuccessResponse(h, 'Authentication berhasil ditambahkan', { accessToken, refreshToken });
+      return postSuccessResponse(h, 'Autentikasi berhasil ditambahkan', { accessToken, refreshToken });
     } catch (error) {
       return error;
     }
