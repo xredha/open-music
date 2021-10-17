@@ -1,5 +1,4 @@
-const ClientError = require('../../exceptions/ClientError');
-const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
+const { postSuccessResponse } = require('../../responses');
 
 class PlaylistsHandler {
   constructor(service, validator) {
@@ -28,17 +27,15 @@ class PlaylistsHandler {
 
       return postSuccessResponse(h, 'Playlist berhasil ditambahkan', { playlistId });
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async getPlaylistsHandler({ auth }, h) {
+  async getPlaylistsHandler({ auth }) {
     try {
       const { id: credentialId } = auth.credentials;
       const playlists = await this._service.getPlaylists(credentialId);
+
       return {
         status: 'success',
         data: {
@@ -46,14 +43,11 @@ class PlaylistsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async deletePlaylistByIdHandler({ params, auth }, h) {
+  async deletePlaylistByIdHandler({ params, auth }) {
     try {
       const { id } = params;
       const { id: credentialId } = auth.credentials;
@@ -66,10 +60,7 @@ class PlaylistsHandler {
         message: 'Catatan berhasil dihapus',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
@@ -85,20 +76,16 @@ class PlaylistsHandler {
 
       return postSuccessResponse(h, 'Playlist berhasil ditambahkan');
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async getSongsFromPlaylistHandler({ params, auth }, h) {
+  async getSongsFromPlaylistHandler({ params, auth }) {
     try {
       const { id } = params;
       const { id: credentialId } = auth.credentials;
 
       await this._service.verifyPlaylistAccess(id, credentialId);
-
       const songs = await this._service.getSongsFromPlaylist(id);
 
       return {
@@ -108,14 +95,11 @@ class PlaylistsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async deleteSongFromPlaylistByIdHandler(request, h) {
+  async deleteSongFromPlaylistByIdHandler(request) {
     try {
       const { id } = request.params;
       const { songId } = request.payload;
@@ -129,17 +113,15 @@ class PlaylistsHandler {
         message: 'Lagu berhasil dihapus dari playlist',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async getUsersByUsernameHandler({ query }, h) {
+  async getUsersByUsernameHandler({ query }) {
     try {
       const { username = '' } = query;
       const users = await this._service.getUsersByUsername(username);
+
       return {
         status: 'success',
         data: {
@@ -147,10 +129,7 @@ class PlaylistsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 }

@@ -1,5 +1,4 @@
-const ClientError = require('../../exceptions/ClientError');
-const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
+const { postSuccessResponse } = require('../../responses');
 
 class AuthenticationsHandler {
   constructor(authenticationsService, usersService, tokenManager, validator) {
@@ -16,33 +15,25 @@ class AuthenticationsHandler {
   async postAuthenticationHandler({ payload }, h) {
     try {
       this._validator.validatePostAuthenticationPayload(payload);
-
       const { username, password } = payload;
 
       const id = await this._usersService.verifyUserCredential(username, password);
-
       const accessToken = this._tokenManager.generateAccessToken({ id });
       const refreshToken = this._tokenManager.generateRefreshToken({ id });
-
       await this._authenticationsService.addRefreshToken(refreshToken);
 
       return postSuccessResponse(h, 'Authentication berhasil ditambahkan', { accessToken, refreshToken });
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async putAuthenticationHandler({ payload }, h) {
+  async putAuthenticationHandler({ payload }) {
     try {
       this._validator.validatePutAuthenticationPayload(payload);
-
       const { refreshToken } = payload;
 
       await this._authenticationsService.verifyRefreshToken(refreshToken);
-
       const { id } = this._tokenManager.verifyRefreshToken(refreshToken);
 
       const accessToken = this._tokenManager.generateAccessToken({ id });
@@ -54,14 +45,11 @@ class AuthenticationsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async deleteAuthenticationHandler({ payload }, h) {
+  async deleteAuthenticationHandler({ payload }) {
     try {
       this._validator.validateDeleteAuthenticationPayload(payload);
 
@@ -75,10 +63,7 @@ class AuthenticationsHandler {
         message: 'Refresh token berhasil dihapus',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 }

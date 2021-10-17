@@ -1,5 +1,4 @@
-const ClientError = require('../../exceptions/ClientError');
-const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
+const { postSuccessResponse } = require('../../responses');
 
 class UsersHandler {
   constructor(service, validator) {
@@ -17,17 +16,15 @@ class UsersHandler {
 
       return postSuccessResponse(h, 'User berhasil ditambahkan', { userId });
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async getUserByIdHandler({ params }, h) {
+  async getUserByIdHandler({ params }) {
     try {
       const { id } = params;
       const user = await this._service.getUserById(id);
+
       return {
         status: 'success',
         data: {
@@ -35,10 +32,7 @@ class UsersHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 }

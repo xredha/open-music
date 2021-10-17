@@ -1,5 +1,4 @@
-const ClientError = require('../../exceptions/ClientError');
-const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
+const { postSuccessResponse } = require('../../responses');
 
 class SongsHandler {
   constructor(service, validator) {
@@ -20,16 +19,14 @@ class SongsHandler {
 
       return postSuccessResponse(h, 'Lagu berhasil ditambahkan', { songId });
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async getSongsHandler(h) {
+  async getSongsHandler() {
     try {
       const songs = await this._service.getSongs();
+
       return {
         status: 'success',
         data: {
@@ -37,17 +34,15 @@ class SongsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async getSongByIdHandler({ params }, h) {
+  async getSongByIdHandler({ params }) {
     try {
       const { id } = params;
       const song = await this._service.getSongById(id);
+
       return {
         status: 'success',
         data: {
@@ -55,18 +50,14 @@ class SongsHandler {
         },
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async putSongByIdHandler({ payload, params }, h) {
+  async putSongByIdHandler({ payload, params }) {
     try {
       this._validator.validateSongPayload(payload);
       const { id } = params;
-
       await this._service.editSongById(id, payload);
 
       return {
@@ -74,14 +65,11 @@ class SongsHandler {
         message: 'lagu berhasil diperbarui',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async deleteSongByIdHandler({ params }, h) {
+  async deleteSongByIdHandler({ params }) {
     try {
       const { id } = params;
       await this._service.deleteSongById(id);
@@ -91,10 +79,7 @@ class SongsHandler {
         message: 'lagu berhasil dihapus',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 }

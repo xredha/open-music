@@ -1,5 +1,4 @@
-const ClientError = require('../../exceptions/ClientError');
-const { postSuccessResponse, clientErrorResponse, serverErrorResponse } = require('../../responses');
+const { postSuccessResponse } = require('../../responses');
 
 class CollaborationsHandler {
   constructor(collaborationsService, playlistsService, validator) {
@@ -24,14 +23,11 @@ class CollaborationsHandler {
 
       return postSuccessResponse(h, 'Kolaborasi berhasil ditambahkan', { collaborationId });
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 
-  async deleteCollaborationHandler({ payload, auth }, h) {
+  async deleteCollaborationHandler({ payload, auth }) {
     try {
       this._validator.validateCollaborationPayload(payload);
       const { id: credentialId } = auth.credentials;
@@ -45,10 +41,7 @@ class CollaborationsHandler {
         message: 'Kolaborasi berhasil dihapus',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        return clientErrorResponse(h, error);
-      }
-      return serverErrorResponse(h);
+      return error;
     }
   }
 }
