@@ -1,21 +1,11 @@
 /* eslint-disable camelcase */
 
 const mapDBToSong = ({
-  id,
-  title,
-  year,
-  performer,
-  genre,
-  duration,
   inserted_at,
   updated_at,
+  ...args
 }) => ({
-  id,
-  title,
-  year,
-  performer,
-  genre,
-  duration,
+  ...args,
   insertedAt: inserted_at,
   updatedAt: updated_at,
 });

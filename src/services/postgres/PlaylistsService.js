@@ -32,15 +32,15 @@ class PlaylistService {
 
   async getPlaylists(owner) {
     const query = {
-      text: `SELECT playlists.*,users.username FROM playlists
+      text: `SELECT playlists.id, playlists.name ,users.username FROM playlists
       LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
       LEFT JOIN users ON users.id = playlists.owner
       WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
       values: [owner],
     };
 
-    const result = await this._pool.query(query);
-    return result.rows.map(mapDBToPlaylists);
+    const { rows } = await this._pool.query(query);
+    return rows.map(mapDBToPlaylists);
   }
 
   async deletePlaylistById(id) {
@@ -77,9 +77,9 @@ class PlaylistService {
       values: [playlistId],
     };
 
-    const result = await this._pool.query(query);
+    const { rows } = await this._pool.query(query);
 
-    return result.rows;
+    return rows;
   }
 
   async deleteSongFromPlaylist(playlistId, songId) {
@@ -97,7 +97,7 @@ class PlaylistService {
 
   async verifyPlaylistOwner(id, owner) {
     const query = {
-      text: 'SELECT * FROM playlists WHERE id = $1',
+      text: 'SELECT owner FROM playlists WHERE id = $1',
       values: [id],
     };
 
@@ -105,8 +105,8 @@ class PlaylistService {
     if (!result.rowCount) {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
-    const playlist = result.rows[0];
-    if (playlist.owner !== owner) {
+    const ownerFromDB = result.rows[0].owner;
+    if (ownerFromDB !== owner) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
   }
@@ -131,8 +131,8 @@ class PlaylistService {
       text: 'SELECT id, username, fullname FROM users WHERE username LIKE $1',
       values: [`%${username}%`],
     };
-    const result = await this._pool.query(query);
-    return result.rows;
+    const { rows } = await this._pool.query(query);
+    return rows;
   }
 }
 

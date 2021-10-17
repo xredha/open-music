@@ -10,12 +10,10 @@ class UsersHandler {
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
   }
 
-  async postUserHandler(request, h) {
+  async postUserHandler({ payload }, h) {
     try {
-      this._validator.validateUserPayload(request.payload);
-      const { username, password, fullname } = request.payload;
-
-      const userId = await this._service.addUser({ username, password, fullname });
+      this._validator.validateUserPayload(payload);
+      const userId = await this._service.addUser(payload);
 
       return postSuccessResponse(h, 'User berhasil ditambahkan', { userId });
     } catch (error) {
@@ -26,9 +24,9 @@ class UsersHandler {
     }
   }
 
-  async getUserByIdHandler(request, h) {
+  async getUserByIdHandler({ params }, h) {
     try {
-      const { id } = request.params;
+      const { id } = params;
       const user = await this._service.getUserById(id);
       return {
         status: 'success',

@@ -15,11 +15,11 @@ class PlaylistsHandler {
     this.getUsersByUsernameHandler = this.getUsersByUsernameHandler.bind(this);
   }
 
-  async postPlaylistHandler(request, h) {
+  async postPlaylistHandler({ payload, auth }, h) {
     try {
-      this._validator.validatePlaylistPayload(request.payload);
-      const { name } = request.payload;
-      const { id: credentialId } = request.auth.credentials;
+      this._validator.validatePlaylistPayload(payload);
+      const { name } = payload;
+      const { id: credentialId } = auth.credentials;
 
       const playlistId = await this._service.addPlaylist({
         name,
@@ -35,9 +35,9 @@ class PlaylistsHandler {
     }
   }
 
-  async getPlaylistsHandler(request, h) {
+  async getPlaylistsHandler({ auth }, h) {
     try {
-      const { id: credentialId } = request.auth.credentials;
+      const { id: credentialId } = auth.credentials;
       const playlists = await this._service.getPlaylists(credentialId);
       return {
         status: 'success',
@@ -53,10 +53,10 @@ class PlaylistsHandler {
     }
   }
 
-  async deletePlaylistByIdHandler(request, h) {
+  async deletePlaylistByIdHandler({ params, auth }, h) {
     try {
-      const { id } = request.params;
-      const { id: credentialId } = request.auth.credentials;
+      const { id } = params;
+      const { id: credentialId } = auth.credentials;
 
       await this._service.verifyPlaylistOwner(id, credentialId);
       await this._service.deletePlaylistById(id);
@@ -92,10 +92,10 @@ class PlaylistsHandler {
     }
   }
 
-  async getSongsFromPlaylistHandler(request, h) {
+  async getSongsFromPlaylistHandler({ params, auth }, h) {
     try {
-      const { id } = request.params;
-      const { id: credentialId } = request.auth.credentials;
+      const { id } = params;
+      const { id: credentialId } = auth.credentials;
 
       await this._service.verifyPlaylistAccess(id, credentialId);
 
@@ -136,9 +136,9 @@ class PlaylistsHandler {
     }
   }
 
-  async getUsersByUsernameHandler(request, h) {
+  async getUsersByUsernameHandler({ query }, h) {
     try {
-      const { username = '' } = request.query;
+      const { username = '' } = query;
       const users = await this._service.getUsersByUsername(username);
       return {
         status: 'success',
