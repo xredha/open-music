@@ -30,7 +30,7 @@ class UploadsHandler {
     const { filename } = request.params;
     const filePath = path.resolve(
       __dirname,
-      '../uploads/file/images',
+      'file/images',
       filename,
     );
     return h.file(filePath);
