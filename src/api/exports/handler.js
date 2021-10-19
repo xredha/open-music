@@ -13,7 +13,7 @@ class ExportsHandler {
     try {
       this._validator.validateExportPlaylistPayload(request.payload);
 
-      const { id: playlistId } = request.params;
+      const { playlistId } = request.params;
       const { id: credentialId } = request.auth.credentials;
       await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
 
@@ -22,7 +22,7 @@ class ExportsHandler {
         targetEmail: request.payload.targetEmail,
       };
 
-      await this._service.sendMessage('export:playlist', JSON.stringify(message));
+      await this._service.sendMessage(process.env.QUEUE_NAME, JSON.stringify(message));
 
       return postSuccessResponse(h, 'Permintaan Anda sedang kami proses');
     } catch (error) {

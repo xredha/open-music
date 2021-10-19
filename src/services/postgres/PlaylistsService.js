@@ -67,6 +67,7 @@ class PlaylistService {
     if (!result.rows[0].id) {
       throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
+    await this._cacheService.delete(`playlist:${playlistId}`);
   }
 
   async getSongsFromPlaylist(playlistId) {
