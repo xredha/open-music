@@ -6,6 +6,19 @@ class PlaylistsService {
     this._cacheService = cacheService;
   }
 
+  async getPlaylistName(playlistId) {
+    try {
+      const query = {
+        text: 'SELECT name FROM playlists WHERE id = $1',
+        values: [playlistId],
+      };
+      const { rows } = await this._pool.query(query);
+      return rows[0].name;
+    } catch (error) {
+      return error;
+    }
+  }
+
   async getSongsFromPlaylist(playlistId) {
     try {
       const result = await this._cacheService.get(`playlist:${playlistId}`);
